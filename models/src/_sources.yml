@@ -1,0 +1,50 @@
+version: 2
+
+sources:
+  - name: raw
+    database: "{{ 'PRD_ECOMMERCE_DB' if target.name == 'prd' else target.name ~ '_ECOMMERCE_DB' }}"
+    schema: RAW
+    tables:
+      - name: regions
+        columns:
+          - name: region_id
+            tests:
+              - unique
+              - not_null
+      - name: customers
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null
+      - name: product_categories
+        columns:
+          - name: category_id
+            tests:
+              - unique
+              - not_null
+      - name: products
+        columns:
+          - name: product_id
+            tests:
+              - unique
+              - not_null
+      - name: orders
+        columns:
+          - name: order_id
+            tests:
+              - unique
+              - not_null
+      - name: order_items
+        columns:
+          - name: order_item_id
+            tests:
+              - unique
+              - not_null
+      - name: promotions
+        columns:
+          - name: promotion_id
+            tests:
+              - unique
+              - not_null
+      - name: order_promotions
