@@ -1,0 +1,17 @@
+shipping_rate_id,region_code,country_code,shipping_method,base_rate,per_kg_rate,min_delivery_days,max_delivery_days,is_express,max_weight_kg,is_active,valid_from,valid_to
+1,NA,US,Standard Ground,5.99,0.50,3,7,false,20,true,2023-01-01,2024-12-31
+2,NA,US,Express,15.99,1.00,1,2,true,15,true,2023-01-01,2024-12-31
+3,NA,CA,Standard Ground,7.99,0.75,4,8,false,20,true,2023-01-01,2024-12-31
+4,NA,CA,Express,19.99,1.25,2,3,true,15,true,2023-01-01,2024-12-31
+5,EU,GB,Standard Delivery,6.99,0.60,4,7,false,20,true,2023-01-01,2024-12-31
+6,EU,GB,Express,16.99,1.10,1,2,true,15,true,2023-01-01,2024-12-31
+7,EU,DE,Standard Delivery,6.99,0.60,3,6,false,20,true,2023-01-01,2024-12-31
+8,EU,DE,Express,16.99,1.10,1,2,true,15,true,2023-01-01,2024-12-31
+9,EU,FR,Standard Delivery,6.99,0.60,3,6,false,20,true,2023-01-01,2024-12-31
+10,EU,FR,Express,16.99,1.10,1,2,true,15,true,2023-01-01,2024-12-31
+11,APAC,AU,Standard Shipping,9.99,0.90,5,10,false,20,true,2023-01-01,2024-12-31
+12,APAC,AU,Express,24.99,1.50,2,4,true,15,true,2023-01-01,2024-12-31
+13,APAC,JP,Standard Shipping,8.99,0.80,4,8,false,20,true,2023-01-01,2024-12-31
+14,APAC,JP,Express,22.99,1.40,2,3,true,15,true,2023-01-01,2024-12-31
+15,APAC,SG,Standard Shipping,7.99,0.70,3,7,false,20,true,2023-01-01,2024-12-31
+16,APAC,SG,Express,20.99,1.30,1,3,true,15,true,2023-01-01,2024-12-31

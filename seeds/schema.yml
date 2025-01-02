@@ -1,0 +1,49 @@
+version: 2
+
+seeds:
+  - name: seed_shipping_rates
+    description: Reference table for shipping rates by region and method
+    columns:
+      - name: shipping_rate_id
+        description: Unique identifier for the shipping rate
+        tests:
+          - unique
+          - not_null
+      - name: region_code
+        description: Code of the shipping region
+        tests:
+          - not_null
+      - name: country_code
+        description: Two-letter country code
+        tests:
+          - not_null
+      - name: shipping_method
+        description: Shipping method name
+        tests:
+          - not_null
+      - name: base_rate
+        description: Base shipping rate
+        tests:
+          - not_null
+      - name: per_kg_rate
+        description: Additional cost per kilogram
+        tests:
+          - not_null
+      - name: min_delivery_days
+        description: Minimum delivery days
+        tests:
+          - not_null
+      - name: max_delivery_days
+        description: Maximum delivery days
+        tests:
+          - not_null
+      - name: is_express
+        description: Whether this is an express shipping option
+      - name: max_weight_kg
+        description: Maximum weight allowed for this shipping method
+      - name: is_active
+        description: Whether this shipping rate is currently active
+      - name: valid_from
+        description: Date from which this rate is valid
+      - name: valid_to
+        description: Date until which this rate is valid
