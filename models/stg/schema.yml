@@ -1,0 +1,233 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Staged customer data with standardized attributes
+    columns:
+      - name: customer_id
+        description: Primary key of the customers table
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: Customer's first name
+      - name: last_name
+        description: Customer's last name
+      - name: email_address
+        description: Customer's email address (lowercase)
+      - name: phone_number
+        description: Standardized phone number (digits only)
+      - name: region_id
+        description: Foreign key to regions table
+        tests:
+          - relationships:
+              to: ref('stg_regions')
+              field: region_id
+      - name: address_line1
+        description: Primary address line
+      - name: address_line2
+        description: Secondary address line
+      - name: city
+        description: City name
+      - name: state
+        description: State or province
+      - name: postal_code
+        description: Postal or ZIP code
+      - name: country_code
+        description: ISO country code (uppercase)
+      - name: customer_segment
+        description: Customer segmentation category
+      - name: is_active
+        description: Flag indicating if the customer account is active
+      - name: birth_date
+        description: Customer's date of birth
+      - name: created_at
+        description: Timestamp when the customer record was created
+      - name: updated_at
+        description: Timestamp when the customer record was last updated
+      - name: last_login_at
+        description: Timestamp of customer's last login
+
+  - name: stg_orders
+    description: Staged orders data with standardized monetary values
+    columns:
+      - name: order_id
+        description: Primary key of the orders table
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to customers table
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+      - name: order_status
+        description: Current status of the order
+      - name: payment_status
+        description: Current status of the payment
+      - name: payment_method
+        description: Method used for payment
+      - name: shipping_method
+        description: Selected shipping method
+      - name: currency_code
+        description: ISO currency code
+      - name: subtotal_amount
+        description: Order subtotal in dollars
+      - name: shipping_amount
+        description: Shipping cost in dollars
+      - name: tax_amount
+        description: Tax amount in dollars
+      - name: discount_amount
+        description: Total discount amount in dollars
+      - name: total_amount
+        description: Final order amount in dollars
+
+  - name: stg_order_items
+    description: Staged order items data
+    columns:
+      - name: order_item_id
+        description: Primary key of the order items table
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Foreign key to orders table
+        tests:
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: product_id
+        description: Foreign key to products table
+        tests:
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: quantity
+        description: Number of items ordered
+      - name: unit_price_amount
+        description: Price per unit in dollars
+      - name: discount_amount
+        description: Discount amount in dollars
+      - name: total_price_amount
+        description: Total price in dollars
+
+  - name: stg_order_promotions
+    description: Staged order promotions mapping data
+    columns:
+      - name: order_id
+        description: Foreign key to orders table
+        tests:
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: promotion_id
+        description: Foreign key to promotions table
+        tests:
+          - relationships:
+              to: ref('stg_promotions')
+              field: promotion_id
+      - name: discount_amount
+        description: Promotion discount amount in dollars
+
+  - name: stg_products
+    description: Staged products data
+    columns:
+      - name: product_id
+        description: Primary key of the products table
+        tests:
+          - unique
+          - not_null
+      - name: category_id
+        description: Foreign key to product categories table
+        tests:
+          - relationships:
+              to: ref('stg_product_categories')
+              field: category_id
+      - name: product_name
+        description: Display name of the product
+      - name: product_code
+        description: Unique identifier code for the product
+        tests:
+          - unique
+      - name: brand_name
+        description: Brand name of the product
+      - name: base_price_amount
+        description: Original price in dollars
+      - name: discount_price_amount
+        description: Discounted price in dollars
+      - name: weight_grams
+        description: Product weight in grams
+      - name: is_digital
+        description: Flag indicating if product is digital
+
+  - name: stg_product_categories
+    description: Staged product categories data
+    columns:
+      - name: category_id
+        description: Primary key of the product categories table
+        tests:
+          - unique
+          - not_null
+      - name: parent_category_id
+        description: Self-referential foreign key to parent category
+        tests:
+          - relationships:
+              to: ref('stg_product_categories')
+              field: category_id
+      - name: category_name
+        description: Display name of the category
+      - name: category_code
+        description: Unique identifier code for the category
+        tests:
+          - unique
+
+  - name: stg_promotions
+    description: Staged promotions data
+    columns:
+      - name: promotion_id
+        description: Primary key of the promotions table
+        tests:
+          - unique
+          - not_null
+      - name: promotion_code
+        description: Unique code for the promotion
+        tests:
+          - unique
+      - name: promotion_name
+        description: Display name of the promotion
+      - name: discount_type
+        description: Type of discount
+      - name: discount_value
+        description: Value of the discount
+      - name: minimum_order_amount
+        description: Minimum order amount required
+      - name: start_date
+        description: Start date of the promotion
+      - name: end_date
+        description: End date of the promotion
+      - name: is_active
+        description: Flag indicating if the promotion is active
+
+  - name: stg_regions
+    description: Staged regions data
+    columns:
+      - name: region_id
+        description: Primary key of the regions table
+        tests:
+          - unique
+          - not_null
+      - name: region_name
+        description: Full name of the region
+      - name: region_code
+        description: Standardized code for the region
+        tests:
+          - unique
+      - name: country_code
+        description: ISO country code
+      - name: is_active
+        description: Flag indicating if the region is active
+      - name: valid_from
+        description: Validity start date
+      - name: valid_to
+        description: Validity end date
