@@ -1,0 +1,267 @@
+version: 2
+
+models:
+  - name: int_customer_order_history
+    description: Aggregated order history metrics per customer
+    columns:
+      - name: customer_id
+        description: Primary key - The unique identifier of the customer
+        tests:
+          - unique
+          - not_null
+      - name: total_orders
+        description: Total number of orders placed by the customer
+      - name: total_lifetime_value
+        description: Total amount spent by the customer across all orders
+      - name: first_order_date
+        description: Date of customer's first order
+      - name: last_order_date
+        description: Date of customer's most recent order
+      - name: avg_order_value
+        description: Average order value for the customer
+      - name: total_cancelled_orders
+        description: Total number of cancelled orders
+      - name: total_delivered_orders
+        description: Total number of successfully delivered orders
+
+  - name: int_daily_order_metrics
+    description: Daily aggregated order metrics
+    columns:
+      - name: order_date
+        description: The date of the orders
+        tests:
+          - unique
+          - not_null
+      - name: total_orders
+        description: Total number of orders for the day
+      - name: unique_customers
+        description: Number of unique customers who placed orders
+      - name: total_revenue
+        description: Total revenue for the day
+      - name: total_shipping_revenue
+        description: Total shipping revenue for the day
+      - name: total_tax_amount
+        description: Total tax collected for the day
+      - name: total_discount_amount
+        description: Total discounts applied for the day
+      - name: total_items_sold
+        description: Total number of items sold
+      - name: avg_order_value
+        description: Average order value for the day
+      - name: revenue_per_customer
+        description: Average revenue per customer for the day
+
+  - name: int_order_items_detail
+    description: Enriched order items with product and category information
+    columns:
+      - name: order_item_id
+        description: Primary key - The unique identifier of the order item
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: The order identifier
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+      - name: product_id
+        description: The product identifier
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+      - name: product_name
+        description: Name of the product
+      - name: category_id
+        description: The category identifier
+      - name: category_name
+        description: Name of the product category
+      - name: quantity
+        description: Quantity of items ordered
+      - name: unit_price_amount
+        description: Price per unit
+      - name: discount_amount
+        description: Discount amount applied
+      - name: total_price_amount
+        description: Total price before discount
+      - name: net_price_amount
+        description: Total price after discount
+      - name: is_digital
+        description: Flag indicating if the product is digital
+
+  - name: int_product_performance
+    description: Aggregated performance metrics for each product
+    columns:
+      - name: product_id
+        description: Primary key - The unique identifier of the product
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Name of the product
+      - name: category_id
+        description: The category identifier
+      - name: brand_name
+        description: Brand name of the product
+      - name: number_of_orders
+        description: Total number of orders containing this product
+      - name: number_of_unique_customers
+        description: Number of unique customers who purchased this product
+      - name: total_units_sold
+        description: Total quantity sold
+      - name: gross_revenue
+        description: Total revenue before discounts
+      - name: total_discounts
+        description: Total discounts applied
+      - name: net_revenue
+        description: Total revenue after discounts
+      - name: current_stock_level
+        description: Current inventory level
+      - name: reorder_point
+        description: Stock level at which reorder is recommended
+
+  - name: int_category_hierarchy
+    description: Complete category hierarchy with paths
+    columns:
+      - name: category_id
+        description: The unique identifier of the category
+        tests:
+          - not_null
+      - name: parent_category_id
+        description: The identifier of the parent category
+      - name: category_name
+        description: Name of the category
+      - name: category_code
+        description: Unique code for the category
+      - name: level
+        description: Depth level in the category hierarchy
+      - name: category_path
+        description: Full path of category names from root to current
+      - name: category_id_path
+        description: Full path of category IDs from root to current
+
+  - name: int_product_inventory_status
+    description: Current inventory status for all products
+    columns:
+      - name: product_id
+        description: Primary key - The unique identifier of the product
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Name of the product
+      - name: category_id
+        description: The category identifier
+      - name: current_stock
+        description: Current stock quantity
+      - name: reorder_point
+        description: Stock level at which reorder is recommended
+      - name: total_units_ordered
+        description: Total units ordered across all time
+      - name: needs_reorder
+        description: Flag indicating if product needs reordering
+      - name: stock_status
+        description: Current stock status category
+        tests:
+          - accepted_values:
+              values: ['out_of_stock', 'low_stock', 'medium_stock', 'healthy_stock']
+      - name: is_active
+        description: Flag indicating if the product is active
+
+  - name: int_promotion_performance
+    description: Aggregated performance metrics for promotions
+    columns:
+      - name: promotion_id
+        description: Primary key - The unique identifier of the promotion
+        tests:
+          - unique
+          - not_null
+      - name: promotion_code
+        description: Unique code for the promotion
+      - name: promotion_name
+        description: Name of the promotion
+      - name: total_orders_using_promotion
+        description: Number of orders that used this promotion
+      - name: total_customers_using_promotion
+        description: Number of unique customers who used this promotion
+      - name: total_discount_amount
+        description: Total discount amount applied through this promotion
+      - name: total_order_value
+        description: Total value of orders using this promotion
+      - name: avg_discount_per_order
+        description: Average discount amount per order
+      - name: discount_percentage_of_sales
+        description: Discount amount as a percentage of total sales
+
+  - name: int_regional_performance
+    description: Performance metrics by region
+    columns:
+      - name: region_id
+        description: Primary key - The unique identifier of the region
+        tests:
+          - unique
+          - not_null
+      - name: region_name
+        description: Name of the region
+      - name: region_code
+        description: Code for the region
+      - name: country_code
+        description: Country code
+      - name: total_customers
+        description: Total number of customers in the region
+      - name: total_orders
+        description: Total number of orders from the region
+      - name: orders_last_30_days
+        description: Number of orders in the last 30 days
+      - name: total_revenue
+        description: Total revenue from the region
+      - name: revenue_last_30_days
+        description: Revenue from the last 30 days
+      - name: avg_order_value
+        description: Average order value in the region
+      - name: revenue_per_customer
+        description: Average revenue per customer in the region
+
+  - name: int_customer_segmentation
+    description: Customer segmentation and activity status
+    columns:
+      - name: customer_id
+        description: Primary key - The unique identifier of the customer
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: Customer's first name
+      - name: last_name
+        description: Customer's last name
+      - name: email_address
+        description: Customer's email address
+      - name: region_id
+        description: Region identifier
+        tests:
+          - relationships:
+              to: ref('stg_regions')
+              field: region_id
+      - name: total_orders
+        description: Total number of orders placed
+      - name: total_lifetime_value
+        description: Total amount spent by customer
+      - name: avg_order_value
+        description: Average order value
+      - name: days_since_first_order
+        description: Number of days since first order
+      - name: days_since_last_order
+        description: Number of days since last order
+      - name: customer_segment
+        description: Customer segment based on purchase behavior
+        tests:
+          - accepted_values:
+              values: ['VIP', 'Regular', 'New', 'At Risk']
+      - name: activity_status
+        description: Current activity status of the customer
+        tests:
+          - accepted_values:
+              values: ['Active', 'Recent', 'Lapsed', 'Inactive']
