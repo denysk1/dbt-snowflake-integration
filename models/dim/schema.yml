@@ -1,0 +1,341 @@
+version: 2
+
+models:
+  # Region and Customer related dimensions
+  - name: dim_regions
+    description: Region dimension table
+    columns:
+      - name: region_sk
+        description: Surrogate key for the region
+        tests:
+          - unique
+          - not_null
+      - name: region_id
+        description: Natural key for the region
+        tests:
+          - unique
+          - not_null
+      - name: region_name
+        description: Name of the region
+        tests:
+          - not_null
+      - name: region_code
+        description: Code identifying the region
+        tests:
+          - not_null
+      - name: country_code
+        description: Country code for the region
+        tests:
+          - not_null
+      - name: is_active
+        description: Flag indicating if the region is currently active
+      - name: valid_from
+        description: Date from which this region record is valid
+      - name: valid_to
+        description: Date until which this region record is valid
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  - name: dim_customers
+    description: Customer dimension table with current attributes and segmentation
+    columns:
+      - name: customer_sk
+        description: Surrogate key for the customer
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Natural key for the customer
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: Customer's first name
+      - name: last_name
+        description: Customer's last name
+      - name: email_address
+        description: Customer's email address
+      - name: region_sk
+        description: Foreign key to dim_regions
+        tests:
+          - relationships:
+              to: ref('dim_regions')
+              field: region_sk
+      - name: customer_segment
+        description: Current customer segment
+        tests:
+          - accepted_values:
+              values: ['VIP', 'Regular', 'New', 'At Risk']
+      - name: activity_status
+        description: Current activity status
+        tests:
+          - accepted_values:
+              values: ['Active', 'Recent', 'Lapsed', 'Inactive']
+      - name: total_lifetime_value
+        description: Total lifetime value of the customer
+      - name: total_orders
+        description: Total number of orders placed by the customer
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  - name: dim_customer_addresses
+    description: Historical customer addresses dimension table
+    columns:
+      - name: address_sk
+        description: Surrogate key for the address record
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to the customer
+        tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: address_line1
+        description: Primary address line
+      - name: address_line2
+        description: Secondary address line
+      - name: city
+        description: City name
+      - name: state
+        description: State or province
+      - name: postal_code
+        description: Postal or ZIP code
+      - name: country_code
+        description: Country code
+      - name: valid_from
+        description: Date from which this address record is valid
+        tests:
+          - not_null
+      - name: valid_to
+        description: Date until which this address record is valid
+        tests:
+          - not_null
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  # Product and Category related dimensions
+  - name: dim_product_categories
+    description: Product category dimension table with hierarchy information
+    columns:
+      - name: category_sk
+        description: Surrogate key for the category
+        tests:
+          - unique
+          - not_null
+      - name: category_id
+        description: Natural key for the category
+        tests:
+          - unique
+          - not_null
+      - name: parent_category_id
+        description: ID of the parent category
+        tests:
+          - relationships:
+              to: ref('dim_product_categories')
+              field: category_id
+              where: "parent_category_id is not null"
+      - name: category_name
+        description: Name of the category
+        tests:
+          - not_null
+      - name: category_code
+        description: Unique code for the category
+        tests:
+          - unique
+          - not_null
+      - name: hierarchy_level
+        description: Level in the category hierarchy (1 being root)
+        tests:
+          - not_null
+      - name: category_path
+        description: Full hierarchical path of category names
+        tests:
+          - not_null
+      - name: category_id_path
+        description: Full hierarchical path of category IDs
+        tests:
+          - not_null
+      - name: root_category_name
+        description: Name of the root category
+      - name: root_category_id
+        description: ID of the root category
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  - name: dim_products
+    description: Product dimension table with current attributes and metrics
+    columns:
+      - name: product_sk
+        description: Surrogate key for the product
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: Natural key for the product
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Name of the product
+        tests:
+          - not_null
+      - name: product_code
+        description: Unique code for the product
+        tests:
+          - unique
+          - not_null
+      - name: brand_name
+        description: Brand name of the product
+      - name: is_digital
+        description: Flag indicating if the product is digital
+      - name: category_sk
+        description: Foreign key to dim_product_categories
+        tests:
+          - relationships:
+              to: ref('dim_product_categories')
+              field: category_sk
+      - name: category_name
+        description: Name of the product's category
+      - name: product_category_path
+        description: Full category hierarchy path for the product
+      - name: base_price_amount
+        description: Original price of the product
+        tests:
+          - not_null
+      - name: discount_price_amount
+        description: Discounted price of the product (if applicable)
+      - name: discount_percentage
+        description: Percentage discount currently applied
+      - name: weight_grams
+        description: Weight of the product in grams
+      - name: current_stock_quantity
+        description: Current inventory level
+      - name: reorder_point
+        description: Stock level at which reorder is recommended
+      - name: needs_reorder
+        description: Flag indicating if product needs reordering
+      - name: stock_status
+        description: Current stock level status
+        tests:
+          - accepted_values:
+              values: ['out_of_stock', 'low_stock', 'medium_stock', 'healthy_stock']
+      - name: total_units_sold
+        description: Total quantity sold to date
+      - name: gross_revenue
+        description: Total revenue before discounts
+      - name: net_revenue
+        description: Total revenue after discounts
+      - name: number_of_unique_customers
+        description: Number of unique customers who purchased this product
+      - name: is_active
+        description: Flag indicating if the product is currently active
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  # Order related dimensions
+  - name: dim_promotions
+    description: Promotion dimension table with performance metrics
+    columns:
+      - name: promotion_sk
+        description: Surrogate key for the promotion
+        tests:
+          - unique
+          - not_null
+      - name: promotion_id
+        description: Natural key for the promotion
+        tests:
+          - unique
+          - not_null
+      - name: promotion_code
+        description: Unique code for the promotion
+        tests:
+          - unique
+          - not_null
+      - name: promotion_name
+        description: Name of the promotion
+        tests:
+          - not_null
+      - name: discount_type
+        description: Type of discount (percentage, fixed amount, etc.)
+        tests:
+          - not_null
+      - name: discount_value
+        description: Value of the discount
+        tests:
+          - not_null
+      - name: minimum_order_amount
+        description: Minimum order amount required for the promotion
+      - name: start_date
+        description: Start date of the promotion
+        tests:
+          - not_null
+      - name: end_date
+        description: End date of the promotion
+      - name: is_currently_valid
+        description: Flag indicating if the promotion is currently valid
+      - name: total_orders_using_promotion
+        description: Total number of orders that used this promotion
+      - name: total_discount_amount
+        description: Total discount amount applied through this promotion
+      - name: is_active
+        description: Flag indicating if the promotion is active
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  - name: dim_order_status
+    description: Order status dimension table combining order and payment status
+    columns:
+      - name: order_status_sk
+        description: Surrogate key for the status combination
+        tests:
+          - unique
+          - not_null
+      - name: order_status
+        description: Order fulfillment status
+        tests:
+          - not_null
+      - name: payment_status
+        description: Payment status
+        tests:
+          - not_null
+      - name: is_completed
+        description: Flag indicating if the order is fully completed
+      - name: is_cancelled
+        description: Flag indicating if the order is cancelled
+      - name: is_paid
+        description: Flag indicating if the order is paid
+      - name: status_category
+        description: High-level status category
+        tests:
+          - accepted_values:
+              values: ['In Progress', 'In Transit', 'Completed', 'Cancelled', 'Other']
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
+
+  - name: dim_shipping_methods
+    description: Shipping methods dimension table with usage metrics
+    columns:
+      - name: shipping_method_sk
+        description: Surrogate key for the shipping method
+        tests:
+          - unique
+          - not_null
+      - name: shipping_method
+        description: Name of the shipping method
+        tests:
+          - unique
+          - not_null
+      - name: total_orders
+        description: Total number of orders using this shipping method
+        tests:
+          - not_null
+      - name: avg_shipping_cost
+        description: Average shipping cost for this method
+      - name: min_shipping_cost
+        description: Minimum shipping cost for this method
+      - name: max_shipping_cost
+        description: Maximum shipping cost for this method
+      - name: dbt_updated_at
+        description: Timestamp of when this record was last updated
