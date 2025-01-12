@@ -1,0 +1,134 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: Main fact table for orders
+    columns:
+      - name: order_sk
+        description: Surrogate key for the order
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Natural key for the order
+        tests:
+          - unique
+          - not_null
+      - name: customer_sk
+        description: Foreign key to dim_customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_sk
+      - name: order_status_sk
+        description: Foreign key to dim_order_status
+        tests:
+          - relationships:
+              to: ref('dim_order_status')
+              field: order_status_sk
+      - name: shipping_method_sk
+        description: Foreign key to dim_shipping_methods
+        tests:
+          - relationships:
+              to: ref('dim_shipping_methods')
+              field: shipping_method_sk
+      - name: order_date
+        description: Date when the order was created
+        tests:
+          - not_null
+      - name: order_total_amount
+        description: Total amount of the order
+        tests:
+          - not_null
+      - name: subtotal_amount
+        description: Subtotal amount before tax and shipping
+      - name: tax_amount
+        description: Tax amount
+      - name: shipping_amount
+        description: Shipping amount
+      - name: discount_amount
+        description: Total discount amount
+      - name: distinct_products
+        description: Number of distinct products in the order
+      - name: total_items
+        description: Total number of items in the order
+      - name: is_completed
+        description: Flag indicating if the order is completed
+      - name: is_cancelled
+        description: Flag indicating if the order is cancelled
+      - name: is_paid
+        description: Flag indicating if the order is paid
+
+  - name: fct_order_items
+    description: Fact table for order line items
+    columns:
+      - name: order_item_sk
+        description: Surrogate key for the order item
+        tests:
+          - unique
+          - not_null
+      - name: order_item_id
+        description: Natural key for the order item
+        tests:
+          - unique
+          - not_null
+      - name: order_sk
+        description: Foreign key to fct_orders
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: order_sk
+      - name: product_sk
+        description: Foreign key to dim_products
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_sk
+      - name: quantity
+        description: Quantity of items ordered
+        tests:
+          - not_null
+      - name: unit_price_amount
+        description: Price per unit
+        tests:
+          - not_null
+      - name: discount_amount
+        description: Discount amount applied
+      - name: total_price_amount
+        description: Total price before discount
+        tests:
+          - not_null
+      - name: net_price_amount
+        description: Total price after discount
+      - name: net_unit_price
+        description: Net price per unit after discount
+
+  - name: fct_order_promotions
+    description: Fact table for promotions applied to orders
+    columns:
+      - name: order_promotion_sk
+        description: Surrogate key for the order-promotion combination
+        tests:
+          - unique
+          - not_null
+      - name: order_sk
+        description: Foreign key to fct_orders
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: order_sk
+      - name: promotion_sk
+        description: Foreign key to dim_promotions
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_promotions')
+              field: promotion_sk
+      - name: promotion_discount_amount
+        description: Discount amount applied from this promotion
+        tests:
+          - not_null
