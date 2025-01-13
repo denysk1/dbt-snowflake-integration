@@ -1,0 +1,94 @@
+version: 2
+
+models:
+  - name: mart_category_analysis
+    description: "Product category performance analysis"
+    columns:
+      - name: category_sk
+        description: "The surrogate key for the category"
+        data_tests:
+          - not_null
+          - unique
+
+      - name: category_name
+        description: "Name of the product category"
+        data_tests:
+          - not_null
+
+      - name: sales_month
+        description: "Month of the sales analysis"
+        data_tests:
+          - not_null
+
+      - name: gross_revenue
+        description: "Total gross revenue for the category"
+        data_tests:
+          - not_null
+
+      - name: net_revenue
+        description: "Total net revenue after discounts"
+        data_tests:
+          - not_null
+
+      - name: total_orders
+        description: "Total number of orders"
+        data_tests:
+          - not_null
+
+      - name: units_sold
+        description: "Total units sold"
+        data_tests:
+          - not_null
+
+      - name: total_discounts
+        description: "Total discounts applied"
+        data_tests:
+          - not_null
+
+      - name: shipping_revenue
+        description: "Revenue from shipping"
+        data_tests:
+          - not_null
+
+      - name: total_stock_quantity
+        description: "Current total stock quantity"
+        data_tests:
+          - not_null
+
+      - name: avg_discount_percentage
+        description: "Average discount percentage"
+        data_tests:
+          - not_null
+          - percentage_breakdown
+
+      - name: avg_base_price
+        description: "Average base price"
+        data_tests:
+          - not_null
+
+      - name: avg_selling_price
+        description: "Average selling price"
+        data_tests:
+          - not_null
+
+      - name: margin_percentage
+        description: "Profit margin percentage"
+        data_tests:
+          - not_null
+          - percentage_breakdown
+
+      - name: region_code
+        description: "Region code for geographical analysis"
+
+      - name: country_code
+        description: "Country code"
+
+      - name: completed_orders
+        description: "Number of completed orders"
+        data_tests:
+          - not_null
+
+      - name: paid_orders
+        description: "Number of paid orders"
+        data_tests:
+          - not_null
