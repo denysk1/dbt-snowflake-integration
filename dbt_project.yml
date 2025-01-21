@@ -51,3 +51,9 @@ models:
     mart:
       +materialized: table
       +schema: mart
+
+seeds:
+  dbt_snowflake_integration:
+    seed_shipping_rates:
+      +enabled: true
+      +schema: raw
