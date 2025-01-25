@@ -2,21 +2,22 @@
 
 ## Project Structure
 
-dbt-snowflake-integration/
-├── analyses/          # Ad-hoc analyses and one-off queries
-├── macros/            # Reusable SQL/Jinja code blocks
-├── models/            # Core transformation logic
-│   ├── src/           # Source layer models
-│   ├── stg/           # Staging layer models
-│   ├── int/           # Intermediate layer models
-│   ├── dim/           # Dimension tables
-│   ├── fct/           # Fact tables
-│   └── mart/          # Business-specific data marts
-├── seeds/             # Static data files (CSV)
-├── snapshots/         # Table snapshot definitions
-├── tests/             # Custom data test definitions
-└── dbt_project.yml    # Project configurations
-
+```bash
+**dbt-snowflake-integration/**
+**├── analyses/**  # Ad-hoc analyses and one-off queries
+**├── macros/** # Reusable SQL/Jinja code blocks
+**├── models/** # Core transformation logic
+**│ ├── src/ #** Source layer models
+**│ ├── stg/** # Staging layer models
+**│ ├── int/** # Intermediate layer models
+**│ ├── dim/** # Dimension tables
+**│ ├── fct/** # Fact tables
+**│ └── mart/** # Business-specific data marts
+**├── seeds/** # Static data files (CSV)
+**├── snapshots/** # Table snapshot definitions
+**├── tests/** # Custom data test definitions
+**└── dbt_project.yml** # Project configurations
+```
 
 ## Data Warehouse Layer Architecture
 
