@@ -15,6 +15,7 @@ dbt-snowflake-integration/
 │   └── mart/          # Business-specific data marts
 ├── seeds/             # Static data files (CSV)
 ├── snapshots/         # Table snapshot definitions
+├── sql_scripts/       # SQL scritps for initial DWH setup
 ├── tests/             # Custom data test definitions
 └── dbt_project.yml    # Project configurations
 ```
